@@ -23,9 +23,14 @@ module.exports = async (req, res) => {
   }
 
   // 根路由
-  res.status(200).json({
-    status: "ok",
-    message: "Welcome to the API",
-    version: "1.0.0",
-  });
+  if(req.url==="/"){
+      res.status(200).json({
+        status: "ok",
+        message: "Welcome to the API",
+        version: "1.0.0",
+      })
+    };
+  
+   // 如果路由未匹配，返回 404
+   res.status(404).json({ message: "Not Found" });
 };
