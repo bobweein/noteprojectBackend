@@ -5,7 +5,7 @@ const Folder = require("../models/Folder");
 const getFolders = async (req, res) => {
   try {
     const folders = await Folder.find({ userId: req.user._id });
-    res.json(folders);
+    res.status(200).json(folders);
   } catch (error) {
     console.error("Error getting folders:", error.message);
     res.status(500).json({ message: "获取收藏夹失败", error: error.message });

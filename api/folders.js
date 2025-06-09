@@ -12,14 +12,17 @@ module.exports = async (req, res) => {
 
   // 验证用户身份
   await auth(req, res, async () => {
-    if (req.method === "GET" && req.url === "/") {
+
+    const urlParts = req.url.split("?")[0]; // 去掉查询参数
+
+    if (req.method === "GET" && urlParts === "/") {
       // 获取所有收藏夹
       return folderController.getFolders(req, res);
     }
 
     if (req.method === "GET") {
       // 获取单个收藏夹
-      const folderId = req.url.split("/")[1];
+      const folderId = urlParts.split("/")[1];
       return folderController.getFolderById({ ...req, params: { id: folderId } }, res);
     }
 
@@ -30,13 +33,13 @@ module.exports = async (req, res) => {
 
     if (req.method === "PUT") {
       // 更新收藏夹
-      const folderId = req.url.split("/")[1];
+      const folderId = urlParts.split("/")[1];
       return folderController.updateFolder({ ...req, params: { id: folderId } }, res);
     }
 
     if (req.method === "DELETE") {
       // 删除收藏夹
-      const folderId = req.url.split("/")[1];
+      const folderId = urlParts.split("/")[1];
       return folderController.deleteFolder({ ...req, params: { id: folderId } }, res);
     }
 
