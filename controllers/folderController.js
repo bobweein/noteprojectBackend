@@ -94,16 +94,6 @@ const updateFolder = async (req, res) => {
 // 删除收藏夹
 const deleteFolder = async (req, res) => {
   try {
-    if (req.isTestUser) {
-      const folderIndex = testFolders.findIndex((f) => f._id === req.params.id);
-      if (folderIndex === -1) {
-        return res.status(404).json({ message: "收藏夹不存在" });
-      }
-
-      testFolders.splice(folderIndex, 1);
-      return res.json({ message: "收藏夹已删除" });
-    }
-
     const folder = await Folder.findOne({
       _id: req.params.id,
       userId: req.user._id,
