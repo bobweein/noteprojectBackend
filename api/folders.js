@@ -26,18 +26,18 @@ module.exports = async (req, res) => {
       return folderController.getFolderById({ ...req, params: { id: folderId } }, res);
     }
 
-    if (req.method === "POST") {
+    if (req.method === "POST" && urlParts === "/") {
       // 创建新收藏夹
       return folderController.createFolder(req, res);
     }
 
-    if (req.method === "PUT") {
+    if (req.method === "PUT" && urlParts.startsWith("/")) {
       // 更新收藏夹
       const folderId = urlParts.split("/")[1];
       return folderController.updateFolder({ ...req, params: { id: folderId } }, res);
     }
 
-    if (req.method === "DELETE") {
+    if (req.method === "DELETE" && urlParts.startsWith("/")) {
       // 删除收藏夹
       const folderId = urlParts.split("/")[1];
       return folderController.deleteFolder({ ...req, params: { id: folderId } }, res);

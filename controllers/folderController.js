@@ -4,6 +4,7 @@ const Folder = require("../models/Folder");
 // 获取用户的所有收藏夹
 const getFolders = async (req, res) => {
   try {
+    console.log("Fetching all folders for user:", req.user._id);
     const folders = await Folder.find({ userId: req.user._id });
     res.status(200).json(folders);
   } catch (error) {
@@ -85,7 +86,7 @@ const updateFolder = async (req, res) => {
     folder.description = description || folder.description;
     folder.updatedAt = new Date();
     await folder.save();
-    res.json(folder);
+    res.status(200).json(folder);
   } catch (error) {
     console.error("Error updating folder ID:", req.params.id, error);
     res.status(500).json({ message: "更新收藏夹失败", error: error.message });
@@ -104,7 +105,7 @@ const deleteFolder = async (req, res) => {
     }
 
     await folder.deleteOne();
-    res.json({ message: "收藏夹已删除" });
+    res.status(200).json({ message: "收藏夹已删除" });
   } catch (error) {
     console.error("Error deleting folder ID:", req.params.id, error);
     res.status(500).json({ message: "删除收藏夹失败", error: error.message });
