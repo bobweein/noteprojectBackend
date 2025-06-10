@@ -135,5 +135,5 @@ module.exports = async (req, res) => {
   }
 
   // If no route matches, return 404
-  res.status(404).json({ message: "Not Found" });
+  res.status(404).json({ message: "Not Found" },debug:{basePath, subPath});
 };
