@@ -19,7 +19,17 @@ const auth = async (req, res, next) => {
     }
 
     // 验证 token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      return res.status(401).json({
+        message: "无效的认证令牌",
+        error: error.message,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     if (!decoded || !decoded.userId) {
       return res.status(401).json({
         message: "无效的认证令牌",
