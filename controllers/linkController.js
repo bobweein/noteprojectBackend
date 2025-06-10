@@ -16,13 +16,13 @@ const getLinksByFolder = async (req, res) => {
     const folder = await Folder.findOne({
       _id: req.params.folderId,
       userId: req.user._id
-    });
+    }).select("_id");
 
     if (!folder) {
       return res.status(404).json({ message: '收藏夹不存在或无权访问' });
     }
 
-    const links = await Link.find({ folderId: req.params.folderId });
+    const links = await Link.find({ folderId: req.params.folderId }).select("title url note");
     res.json(links);
   } catch (error) {
     console.error('Error getting links for folder:', req.params.folderId, error);
@@ -35,30 +35,10 @@ const createLink = async (req, res) => {
   try {
     const { folderId, title, url, note } = req.body;
 
-    if (req.isTestUser) {
-      const testFolder = testFolders.find(f => f._id === folderId);
-      if (!testFolder) {
-        return res.status(404).json({ message: '收藏夹不存在或无权访问' });
-      }
-
-      const newLink = {
-        _id: `test_link_${Date.now()}`,
-        folderId,
-        title,
-        url,
-        note,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
-      testLinks.push(newLink);
-      return res.status(201).json(newLink);
-    }
-
     const folder = await Folder.findOne({
       _id: folderId,
       userId: req.user._id
-    });
+    }).select("_id");
 
     if (!folder) {
       return res.status(404).json({ message: '收藏夹不存在或无权访问' });
@@ -103,7 +83,7 @@ const updateLink = async (req, res) => {
     const folder = await Folder.findOne({
       _id: link.folderId,
       userId: req.user._id
-    });
+    }).select("_id");
 
     if (!folder) {
       return res.status(403).json({ message: '无权操作此链接' });
@@ -141,7 +121,7 @@ const deleteLink = async (req, res) => {
     const folder = await Folder.findOne({
       _id: link.folderId,
       userId: req.user._id
-    });
+    }).select("_id");
 
     if (!folder) {
       return res.status(403).json({ message: '无权操作此链接' });
