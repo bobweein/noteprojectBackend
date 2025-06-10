@@ -10,7 +10,7 @@ const getFolders = async (req, res) => {
     }
 
     // 获取用户的所有收藏夹
-    const folders = await Folder.find({ userId: req.user._id });
+    const folders = await Folder.find({ userId: req.user._id }).select("name description");
     res.status(200).json(folders);
   } catch (error) {
     console.error("Error fetching folders for user ID:", req.user._id, error);
@@ -31,7 +31,7 @@ const getFolderById = async (req, res) => {
     const folder = await Folder.findOne({
       _id: req.params.id,
       userId: req.user._id,
-    });
+    }).select("name description");
 
     if (!folder) {
       console.error(`Folder not found or unauthorized access: Folder ID ${req.params.id}`);
@@ -60,7 +60,7 @@ const createFolder = async (req, res) => {
     const existingFolder = await Folder.findOne({
       userId: req.user._id,
       name,
-    });
+    }).select("_id");
 
     if (existingFolder) {
       console.error(`Duplicate folder name: ${name}`);
@@ -98,7 +98,7 @@ const updateFolder = async (req, res) => {
       userId: req.user._id,
       name,
       _id: { $ne: req.params.id }, // 排除当前正在编辑的收藏夹
-    });
+    }).select("_id");
 
     if (existingFolder) {
       console.error(`Duplicate folder name: ${name}`);
@@ -142,7 +142,7 @@ const deleteFolder = async (req, res) => {
     const folder = await Folder.findOne({
       _id: req.params.id,
       userId: req.user._id, // 确保收藏夹属于当前用户
-    });
+    }).select("_id");
 
     if (!folder) {
       console.error(`Folder not found or unauthorized access: Folder ID ${req.params.id}`);
