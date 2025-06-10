@@ -58,47 +58,41 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // 检查邮箱和密码是否提供
+    if (!email || !password) {
+      return res.status(400).json({ message: "邮箱和密码是必填项" });
+    }
+
+    // 检查数据库连接状态
     if (mongoose.connection.readyState !== 1) {
-      console.log('数据库未连接，使用测试账户登录');
-
-      if (email === 'test@example.com' && password === 'password123') {
-        const token = jwt.sign(
-          { userId: 'test_user_id' },
-          process.env.JWT_SECRET || 'fallback_jwt_secret_for_development',
-          { expiresIn: '1d' }
-        );
-
-        return res.json({
-          message: '登录成功（测试模式）',
-          token,
-          user: {
-            id: 'test_user_id',
-            username: '测试用户',
-            email: 'test@example.com'
-          }
-        });
-      }
-
-      return res.status(401).json({ 
-        message: '邮箱或密码错误（测试模式下请使用 test@example.com / password123）',
-        db_status: 'disconnected'
+      return res.status(503).json({ 
+        message: "数据库连接失败，请稍后再试。",
+        db_status: "disconnected"
       });
     }
 
+    // 查找用户
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: '邮箱或密码错误' });
+    if (!user) {
+      return res.status(401).json({ message: "邮箱或密码错误" });
+    }
 
+    // 验证密码
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: '邮箱或密码错误' });
+    if (!isMatch) {
+      return res.status(401).json({ message: "邮箱或密码错误" });
+    }
 
+    // 生成 JWT Token
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET || 'fallback_jwt_secret_for_development',
-      { expiresIn: '7d' }
+      process.env.JWT_SECRET, // 强制使用环境变量中的 JWT_SECRET
+      { expiresIn: "7d" }
     );
 
+    // 返回成功响应
     res.json({
-      message: '登录成功',
+      message: "登录成功",
       token,
       user: {
         id: user._id,
@@ -107,7 +101,8 @@ const login = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: '登录失败', error: error.message });
+    console.error("登录失败:", error);
+    res.status(500).json({ message: "登录失败", error: error.message });
   }
 };
 
