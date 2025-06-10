@@ -11,12 +11,18 @@ module.exports = async (req, res) => {
 
   // Connect to the database
   await connectDB();
-
-  // Extract the base path and subpath
-  const urlParts = req.url.split("?")[0].split("/").filter(Boolean);
+  // Handle the root route `/`
+  if (req.url === "/") {
+    return res.status(200).json({
+      status: "ok",
+      message: "Welcome to the API",
+      version: "1.0.0",
+    });
+  }
+  // Remove the "/api" prefix if it exists
+  const urlParts = req.url.replace(/^\/api/, "").split("?")[0].split("/").filter(Boolean);
   const basePath = urlParts[0] || ""; // 主路径，例如 "folders"
   const subPath = urlParts[1] || "";  // 子路径，例如 "123"
-
   console.log("Base path:", basePath, "Sub path:", subPath); // 添加日志以调试
     // Route: /api/folders
   if (basePath === "folders") {
