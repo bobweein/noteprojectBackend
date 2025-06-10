@@ -13,9 +13,12 @@ module.exports = async (req, res) => {
   await connectDB();
 
   // Extract the base path and subpath
-  const [basePath, subPath] = req.url.split("?")[0].split("/").filter(Boolean);
+  const urlParts = req.url.split("?")[0].split("/").filter(Boolean);
+  const basePath = urlParts[0] || ""; // 主路径，例如 "folders"
+  const subPath = urlParts[1] || "";  // 子路径，例如 "123"
 
-  // Route: /api/folders
+  console.log("Base path:", basePath, "Sub path:", subPath); // 添加日志以调试
+    // Route: /api/folders
   if (basePath === "folders") {
     await auth(req, res, async () => {
       if (req.method === "GET" && !subPath) {
