@@ -8,18 +8,6 @@
     ],
     "routes": [
       {
-        "src": "/api/folders/(.*)",
-        "dest": "api/folders.js"
-      },
-      {
-        "src": "/api/links/(.*)",
-        "dest": "api/links.js"
-      },
-      {
-        "src": "/api/users/(.*)",
-        "dest": "api/users.js"
-      },
-      {
         "src": "/api/(.*)",
         "dest": "api/index.js"
       }
