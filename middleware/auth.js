@@ -10,7 +10,9 @@ const mongoose = require("mongoose");
 const auth = async (req, res, next) => {
   try {
     // 从请求头获取 token
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const authHeader = req.headers['authorization']; // 使用 headers 获取 Authorization
+    const token = authHeader?.startsWith("Bearer ") ? authHeader.replace("Bearer ", "") : null;
+
     if (!token) {
       console.error("Authentication failed: No token provided");
       return res.status(401).json({
