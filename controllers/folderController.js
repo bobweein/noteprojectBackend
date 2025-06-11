@@ -10,7 +10,7 @@ const getFolders = async (req, res) => {
     }
 
     // 获取用户的所有收藏夹
-    const folders = await Folder.find({ userId: req.user._id }).select("name description");
+    const folders = await Folder.find({ userId: req.user._id }).select("_id name description");
     res.status(200).json(folders);
   } catch (error) {
     console.error("Error fetching folders for user ID:", req.user._id, error);
@@ -31,7 +31,7 @@ const getFolderById = async (req, res) => {
     const folder = await Folder.findOne({
       _id: req.params.id,
       userId: req.user._id,
-    }).select("name description");
+    }).select("_id name description");
 
     if (!folder) {
       console.error(`Folder not found or unauthorized access: Folder ID ${req.params.id}`);

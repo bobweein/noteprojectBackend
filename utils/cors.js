@@ -1,6 +1,6 @@
 const handleCors = (req, res) => {
   const origin = req.headers.origin; // 获取请求的来源
-  const allowedOrigins = ["http://localhost:5173"]; // 允许的来源
+  const allowedOrigins = ["https://noteproject-frontend.vercel.app/"]; // 允许的来源
 
   // 检查来源是否被允许
   if (allowedOrigins.includes(origin)) {
