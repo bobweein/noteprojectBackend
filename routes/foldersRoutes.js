@@ -7,7 +7,7 @@ const folderController = require('../controllers/folderController');
 router.use(auth);
 
 // 获取所有收藏夹
-router.get('/', folderController.getAllFolders);
+router.get('/', folderController.getFolders);
 
 // 获取单个收藏夹
 router.get('/:id', folderController.getFolderById);
